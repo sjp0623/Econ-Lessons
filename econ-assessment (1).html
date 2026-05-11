@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#0a1628">
+<title>CA Economics — Cumulative Assessment</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  :root {
+    --bg: #0a1628; --bg2: #111f35; --bg3: #172540;
+    --card: #1a2d47; --card2: #1f3554;
+    --border: rgba(255,255,255,0.08); --border2: rgba(255,255,255,0.14);
+    --text: #f0f4ff; --text2: #8fa8c8; --text3: #5a7a9a;
+    --green: #1fd99a; --green-bg: rgba(31,217,154,0.12);
+    --purple: #9b8ef5; --purple-bg: rgba(155,142,245,0.12);
+    --amber: #f5b942; --amber-bg: rgba(245,185,66,0.1);
+    --red: #f56060; --red-bg: rgba(245,96,96,0.1);
+    --radius: 14px; --radius-sm: 9px;
+  }
+  body { font-family: 'Barlow', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  h1,h2,h3 { font-family: 'Barlow Condensed', sans-serif; }
+
+  /* TOP BAR */
+  .top-bar { position: sticky; top: 0; z-index: 100; background: rgba(10,22,40,0.97); backdrop-filter: blur(8px); border-bottom: 0.5px solid var(--border); padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; }
+  .top-title { font-family: 'Barlow Condensed', sans-serif; font-size: 17px; font-weight: 700; }
+  .score-pill { background: var(--card); border: 0.5px solid var(--border2); border-radius: 20px; padding: 5px 12px; font-size: 13px; font-weight: 600; color: var(--green); }
+
+  /* PROGRESS */
+  .prog-wrap { height: 4px; background: var(--card); border-radius: 4px; overflow: hidden; }
+  .prog-fill { height: 100%; background: var(--green); border-radius: 4px; transition: width .4s ease; }
+
+  /* PAGES */
+  .page { display: none; padding: 20px 16px 80px; max-width: 540px; margin: 0 auto; }
+  .page.active { display: block; }
+
+  /* COVER */
+  .cover-hero { background: linear-gradient(135deg, #0a1e35 0%, #0a1628 100%); border: 0.5px solid rgba(31,217,154,0.2); border-radius: var(--radius); padding: 24px 20px; margin-bottom: 20px; }
+  .cover-eyebrow { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--green); margin-bottom: 8px; }
+  .cover-hero h1 { font-size: 30px; font-weight: 800; line-height: 1.1; margin-bottom: 10px; }
+  .cover-hero p { font-size: 14px; color: var(--text2); line-height: 1.65; }
+  .thread-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
+  .chip { font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 20px; }
+  .chip-g { background: rgba(31,217,154,0.15); color: var(--green); }
+  .chip-p { background: rgba(155,142,245,0.15); color: var(--purple); }
+  .chip-a { background: rgba(245,185,66,0.1); color: var(--amber); }
+
+  .info-card { background: var(--card); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; }
+  .info-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+  .info-card p { font-size: 14px; color: var(--text2); line-height: 1.65; }
+  .section-list { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+  .section-row { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--text2); }
+  .section-num { width: 26px; height: 26px; border-radius: 7px; background: var(--green); color: #000; display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 14px; flex-shrink: 0; }
+
+  /* SECTION HEADERS */
+  .section-header { margin-bottom: 16px; }
+  .section-tag { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--green); margin-bottom: 4px; }
+  .section-title { font-size: 24px; font-weight: 800; line-height: 1.15; margin-bottom: 8px; }
+  .section-context { font-size: 14px; color: var(--text2); line-height: 1.6; padding: 12px 14px; background: var(--card); border-radius: var(--radius-sm); border-left: 3px solid var(--purple); }
+
+  /* QUESTIONS */
+  .q-wrap { margin-bottom: 20px; }
+  .q-stem { font-size: 15px; font-weight: 500; color: var(--text); line-height: 1.6; margin-bottom: 10px; }
+  .q-num-tag { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text3); margin-bottom: 6px; }
+  .choices { display: flex; flex-direction: column; gap: 8px; }
+  .choice-btn {
+    background: var(--card); border: 0.5px solid var(--border2);
+    border-radius: var(--radius-sm); padding: 12px 14px;
+    cursor: pointer; text-align: left; transition: all .15s;
+    font-family: 'Barlow', sans-serif; width: 100%;
+  }
+  .choice-btn:active { transform: scale(0.98); }
+  .choice-btn .opt { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--text3); margin-bottom: 3px; }
+  .choice-btn .txt { font-size: 14px; color: var(--text); line-height: 1.5; }
+  .choice-btn.correct { background: var(--green-bg); border-color: var(--green); }
+  .choice-btn.incorrect { background: var(--red-bg); border-color: var(--red); }
+  .choice-btn.correct .opt { color: var(--green); }
+  .choice-btn.incorrect .opt { color: var(--red); }
+  .feedback { font-size: 13px; line-height: 1.6; padding: 10px 14px; border-radius: var(--radius-sm); display: none; margin-top: 6px; }
+  .feedback.show { display: block; }
+  .feedback.good { background: var(--green-bg); color: var(--green); border: 0.5px solid rgba(31,217,154,0.25); }
+  .feedback.bad { background: var(--red-bg); color: #ff8f8f; border: 0.5px solid rgba(245,96,96,0.25); }
+
+  /* SHORT ANSWER */
+  .sa-wrap { margin-bottom: 20px; }
+  .sa-stem { font-size: 15px; font-weight: 500; color: var(--text); line-height: 1.6; margin-bottom: 8px; }
+  .sa-prompt { font-size: 12px; color: var(--text3); margin-bottom: 8px; }
+  textarea {
+    width: 100%; background: var(--card); border: 0.5px solid var(--border2);
+    border-radius: var(--radius-sm); color: var(--text); font-family: 'Barlow', sans-serif;
+    font-size: 14px; padding: 12px 14px; resize: none; line-height: 1.6;
+    outline: none; transition: border-color .15s;
+  }
+  textarea:focus { border-color: var(--green); }
+  textarea::placeholder { color: var(--text3); }
+  .sa-rubric-btn {
+    background: none; border: 0.5px solid var(--border2); color: var(--text3);
+    font-family: 'Barlow', sans-serif; font-size: 13px; padding: 8px 14px;
+    border-radius: var(--radius-sm); cursor: pointer; margin-top: 6px;
+    display: flex; justify-content: space-between; align-items: center; width: 100%;
+  }
+  .sa-rubric-btn:active { background: var(--card); }
+  .sa-rubric { display: none; margin-top: 6px; background: var(--card2); border-radius: var(--radius-sm); padding: 12px 14px; border: 0.5px solid var(--border); }
+  .sa-rubric.show { display: block; }
+  .sa-rubric p { font-size: 13px; color: var(--text2); line-height: 1.65; margin-bottom: 6px; }
+  .sa-rubric p:last-child { margin-bottom: 0; }
+  .sa-rubric strong { color: var(--amber); }
+
+  /* DIVIDER */
+  .divider { height: 0.5px; background: var(--border); margin: 20px 0; }
+
+  /* NAV BUTTONS */
+  .bottom-nav { display: flex; gap: 8px; margin-top: 24px; }
+  .btn-nav { flex: 1; padding: 14px; border-radius: var(--radius); font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; border: 0.5px solid var(--border2); background: var(--card); color: var(--text2); letter-spacing: .3px; transition: all .15s; }
+  .btn-nav.primary { background: var(--green); border-color: var(--green); color: #000; }
+  .btn-nav:active { transform: scale(0.97); }
+
+  /* RESULTS PAGE */
+  .result-hero { background: linear-gradient(135deg, #0e2a1a 0%, #0a1628 60%); border: 0.5px solid rgba(31,217,154,0.25); border-radius: var(--radius); padding: 22px 20px; margin-bottom: 20px; text-align: center; }
+  .result-score { font-size: 56px; font-weight: 800; color: var(--green); line-height: 1; margin-bottom: 6px; }
+  .result-label { font-size: 14px; color: var(--text2); margin-bottom: 4px; }
+  .result-grade { font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 10px; }
+  .result-msg { font-size: 14px; color: var(--text2); line-height: 1.65; }
+  .breakdown { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+  .breakdown-row { background: var(--card); border: 0.5px solid var(--border); border-radius: var(--radius-sm); padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; }
+  .breakdown-title { font-size: 14px; font-weight: 600; color: var(--text); }
+  .breakdown-sub { font-size: 12px; color: var(--text3); margin-top: 2px; }
+  .breakdown-score { font-size: 15px; font-weight: 700; color: var(--green); flex-shrink: 0; margin-left: 10px; }
+  .breakdown-score.bad { color: var(--red); }
+  .sa-note { background: var(--amber-bg); border: 0.5px solid rgba(245,185,66,0.2); border-radius: var(--radius-sm); padding: 12px 14px; font-size: 13px; color: var(--amber); line-height: 1.6; margin-bottom: 16px; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-title">CA Econ — Assessment</div>
+  <div class="score-pill" id="live-score">0 / 15</div>
+</div>
+<div class="prog-wrap"><div class="prog-fill" id="main-prog" style="width:0%"></div></div>
+
+<!-- COVER -->
+<div class="page active" id="page-cover">
+  <div class="cover-hero">
+    <div class="cover-eyebrow">Cumulative Assessment</div>
+    <h1>CA Economics — All 6 Lessons</h1>
+    <p>California, trains, gun laws, and the economy — let's see what you know.</p>
+    <div class="thread-chips">
+      <span class="chip chip-g">🚄 CAHSR</span>
+      <span class="chip chip-p">⚖️ Gun Laws</span>
+      <span class="chip chip-a">🏛️ Role of Gov.</span>
+    </div>
+  </div>
+
+  <div class="info-card">
+    <h3>What's on this assessment</h3>
+    <div class="section-list">
+      <div class="section-row"><div class="section-num">1</div>Federal Reserve & Monetary Policy — 3 questions</div>
+      <div class="section-row"><div class="section-num">2</div>Fiscal Policy — 3 questions</div>
+      <div class="section-row"><div class="section-num">3</div>Supply & Demand — 2 questions</div>
+      <div class="section-row"><div class="section-num">4</div>Opportunity Cost — 2 questions</div>
+      <div class="section-row"><div class="section-num">5</div>GDP — 2 questions</div>
+      <div class="section-row"><div class="section-num">6</div>Economic Philosophies — 3 questions</div>
+    </div>
+  </div>
+
+  <div class="info-card">
+    <h3>Format</h3>
+    <p>15 multiple choice questions + 3 short answer questions. Multiple choice is auto-graded. Short answers have a rubric your teacher will review.</p>
+  </div>
+
+  <div class="bottom-nav">
+    <button class="btn-nav primary" onclick="showPage('s1')" style="flex:1">Start Assessment →</button>
+  </div>
+</div>
+
+<!-- SECTION 1: FEDERAL RESERVE -->
+<div class="page" id="page-s1">
+  <div class="section-header">
+    <div class="section-tag">Section 1 of 6 — Questions 1–3</div>
+    <div class="section-title">Federal Reserve & Monetary Policy</div>
+    <div class="section-context">The Fed controls interest rates and the money supply. It uses monetary policy to keep the economy stable — not too hot, not too cold.</div>
+  </div>
+
+  <!-- Q1 -->
+  <div class="q-wrap">
+    <div class="q-num-tag">Question 1</div>
+    <div class="q-stem">What is the main job of the Federal Reserve?</div>
+    <div class="choices" id="q1">
+      <button class="choice-btn" onclick="mc('q1',this,'wrong','Close — Congress handles taxes and spending, not the Fed.')"><div class="opt">A</div><div class="txt">Collect taxes and pass new spending bills</div></button>
+      <button class="choice-btn" onclick="mc('q1',this,'right','Correct! The Fed manages the money supply and interest rates to keep the economy stable.')"><div class="opt">B</div><div class="txt">Manage the money supply and set interest rates</div></button>
+      <button class="choice-btn" onclick="mc('q1',this,'wrong','Not quite — that\'s the job of Congress and state governments.')"><div class="opt">C</div><div class="txt">Build infrastructure like roads and rail lines</div></button>
+      <button class="choice-btn" onclick="mc('q1',this,'wrong','Not quite — setting tax rates is a fiscal policy tool, not a Fed tool.')"><div class="opt">D</div><div class="txt">Set income tax rates for all Americans</div></button>
+    </div>
+    <div class="feedback" id="fb-q1"></div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="q-wrap">
+    <div class="q-num-tag">Question 2</div>
+    <div class="q-stem">Inflation is rising fast — prices are going up every month. What should the Fed do?</div>
+    <div class="choices" id="q2">
+      <button class="choice-btn" onclick="mc('q2',this,'wrong','Lower rates would encourage more spending and make inflation worse, not better.')"><div class="opt">A</div><div class="txt">Lower interest rates to encourage more borrowing</div></button>
+      <button class="choice-btn" onclick="mc('q2',this,'right','Correct! Raising rates makes borrowing more expensive, which slows spending and cools inflation.')"><div class="opt">B</div><div class="txt">Raise interest rates to slow down spending and borrowing</div></button>
+      <button class="choice-btn" onclick="mc('q2',this,'wrong','That\'s a fiscal policy tool — Congress spends, not the Fed.')"><div class="opt">C</div><div class="txt">Pass a stimulus bill to give people more money</div></button>
+      <button class="choice-btn" onclick="mc('q2',this,'wrong','The Fed can\'t set prices directly — that\'s not how monetary policy works.')"><div class="opt">D</div><div class="txt">Cap the price of groceries and gas by law</div></button>
+    </div>
+    <div class="feedback" id="fb-q2"></div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="q-wrap">
+    <div class="q-num-tag">Question 3 — CAHSR Connection 🚄</div>
+    <div class="q-stem">California High-Speed Rail borrowed billions of dollars to fund construction. The Fed then raised interest rates significantly. What is the most likely economic effect on the CAHSR project?</div>
+    <div class="choices" id="q3">
+      <button class="choice-btn" onclick="mc('q3',this,'wrong','Higher rates make loans more expensive — the project gets harder to fund, not easier.')"><div class="opt">A</div><div class="txt">Construction gets cheaper because the dollar is worth more</div></button>
+      <button class="choice-btn" onclick="mc('q3',this,'wrong','The Fed doesn\'t directly cancel government projects — it affects borrowing costs.')"><div class="opt">B</div><div class="txt">The Fed cancels the project directly</div></button>
+      <button class="choice-btn" onclick="mc('q3',this,'right','Correct! Higher interest rates mean the existing loans cost more to repay — less money goes to actual construction.')"><div class="opt">C</div><div class="txt">The cost of repaying CAHSR loans increases, leaving less money for actual construction</div></button>
+      <button class="choice-btn" onclick="mc('q3',this,'wrong','Lower rates would make borrowing cheaper, but the question says rates went up.')"><div class="opt">D</div><div class="txt">CAHSR can now borrow money at a lower cost</div></button>
+    </div>
+    <div class="feedback" id="fb-q3"></div>
+  </div>
+
+  <div class="bottom-nav">
+    <button class="btn-nav" onclick="showPage('cover')">← Back</button>
+    <button class="btn-nav primary" onclick="showPage('s2')">Next Section →</button>
+  </div>
+</div>
+
+<!-- SECTION 2: FISCAL POLICY -->
+<div class="page" id="page-s2">
+  <div class="section-header">
+    <div class="section-tag">Section 2 of 6 — Questions 4–6</div>
+    <div class="section-title">Fiscal Policy</div>
+    <div class="section-context">Fiscal policy is how the government — Congress and the President — uses taxes and spending to influence the economy. It works alongside monetary policy but uses different tools.</div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="q-wrap">
+    <div class="q-num-tag">Question 4</div>
+    <div class="q-stem">What is the key difference between monetary policy and fiscal policy?</div>
+    <div class="choices" id="q4">
+      <button class="choice-btn" onclick="mc('q4',this,'wrong','Both monetary and fiscal policy affect the whole country — not split by state vs. federal.')"><div class="opt">A</div><div class="txt">Monetary policy is decided by state governments; fiscal policy is decided by the federal government</div></button>
+      <button class="choice-btn" onclick="mc('q4',this,'right','Correct! The Fed uses interest rates (monetary); Congress uses taxes and spending (fiscal).')"><div class="opt">B</div><div class="txt">Monetary policy uses interest rates and money supply; fiscal policy uses taxes and government spending</div></button>
+      <button class="choice-btn" onclick="mc('q4',this,'wrong','It\'s the opposite — fiscal policy requires votes in Congress and is usually slower.')"><div class="opt">C</div><div class="txt">Fiscal policy is faster because it doesn\'t require votes</div></button>
+      <button class="choice-btn" onclick="mc('q4',this,'wrong','The Fed is independent of the President — it\'s not a presidential tool.')"><div class="opt">D</div><div class="txt">Monetary policy is controlled by the President; fiscal policy is controlled by the Fed</div></button>
+    </div>
+    <div class="feedback" id="fb-q4"></div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="q-wrap">
+    <div class="q-num-tag">Question 5 — Gun Laws Connection ⚖️</div>
+    <div class="q-stem">California spends state tax money on gun violence prevention programs, buyback programs, and law enforcement training related to gun regulations. What type of policy is this an example of?</div>
+    <div class="choices" id="q5">
+      <button class="choice-btn" onclick="mc('q5',this,'wrong','Monetary policy uses interest rates and money supply — not state spending on safety programs.')"><div class="opt">A</div><div class="txt">Monetary policy</div></button>
+      <button class="choice-btn" onclick="mc('q5',this,'right','Correct! Using tax money to fund public programs is fiscal policy — even at the state level.')"><div class="opt">B</div><div class="txt">Fiscal policy</div></button>
+      <button class="choice-btn" onclick="mc('q5',this,'wrong','Supply-side policy focuses on cutting taxes to stimulate private investment — not public spending on safety.')"><div class="opt">C</div><div class="txt">Supply-side policy</div></button>
+      <button class="choice-btn" onclick="mc('q5',this,'wrong','Free market policy would reduce government involvement, not increase spending on regulation.')"><div class="opt">D</div><div class="txt">Free market policy</div></button>
+    </div>
+    <div class="feedback" id="fb-q5"></div>
+  </div>
+
+  <!-- Q6 -->
+  <div class="q-wrap">
+    <div class="q-num-tag">Question 6</div>
+    <div class="q-stem">The economy is in a recession. The government wants to boost it using fiscal policy. Which action fits that goal?</div>
+    <div class="choices" id="q6">
+      <button class="choice-btn" onclick="mc('q6',this,'wrong','Raising taxes during a recession takes money out of people\'s pockets and can make things worse.')"><div class="opt">A</div><div class="txt">Raise income taxes to reduce the deficit</div></button>
+      <button class="choice-btn" onclick="mc('q6',this,'wrong','Cutting all spending during a recession removes money from the economy — that\'s austerity, not stimulus.')"><div class="opt">B</div><div class="txt">Cut all government spending immediately</div></button>
+      <button class="choice-btn" onclick="mc('q6',this,'right','Correct! Increased government spending (like building infrastructure) puts money into the economy and creates jobs — that\'s a fiscal stimulus.')"><div class="opt">C</div><div class="txt">Increase government spending on infrastructure and jobs programs</div></button>
+      <button class="choice-btn" onclick="mc('q6',this,'wrong','Raising interest rates is a monetary policy tool — and during a recession it would slow things down further.')"><div class="opt">D</div><div class="txt">Have the Fed raise interest rates</div></button>
+    </div>
+    <div class="feedback" id="fb-q6"></div>
+  </div>
+
+  <div class="bottom-nav">
+    <button class="btn-nav" onclick="showPage('s1')">← Back</button>
+    <button class="btn-nav primary" onclick="showPage('s3')">Next Section →</button>
+  </div>
+</div>
+
+<!-- SECTION 3: SUPPLY & DEMAND -->
+<div class="page" id="page-s3">
+  <div class="section-header">
+    <div class="section-tag">Section 3 of 6 — Questions 7–8</div>
+    <div class="section-title">Supply & Demand</div>
+    <div class="section-context">Prices aren't random. They're the result of how much of something exists (supply) and how badly people want it (demand). Where both meet is called the equilibrium price.</div>
+  </div>
+
+  <!-- Q7 -->
+  <div class="q-wrap">
+    <div class="q-num-tag">Question 7 — Gun Laws Connection ⚖️</div>
+    <div class="q-stem">California passes a law banning several models of semi-automatic rifles, reducing the number of legal guns available for sale. According to supply and demand, what most likely happens to the price of the guns that are still legal to buy?</div>
+    <div class="choices" id="q7">
+      <button class="choice-btn" onclick="mc('q7',this,'wrong','When supply decreases and demand stays the same, prices go up — not down.')"><div class="opt">A</div><div class="txt">Prices drop because fewer people want guns now</div></button>
+      <button class="choice-btn" onclick="mc('q7',this,'right','Correct! The ban reduces supply. With the same demand and less supply, prices for legal guns rise.')"><div class="opt">B</div><div class="txt">Prices rise because supply has been restricted</div></button>
+      <button class="choice-btn" onclick="mc('q7',this,'wrong','Laws can affect supply significantly — and that changes the price.')"><div class="opt">C</div><div class="txt">Prices stay the same because laws don\'t affect supply</div></button>
+      <button class="choice-btn" onclick="mc('q7',this,'wrong','This would only happen if demand also dropped — but the question doesn\'t say demand changed.')"><div class="opt">D</div><div class="txt">Prices drop because sellers need to attract more buyers</div></button>
+    </div>
+    <div class="feedback" id="fb-q7"></div>
+  </div>
+
+  <!-- Q8 -->
+  <div class="q-wrap">
+    <div class="q-num-tag">Question 8 — CAHSR Connection 🚄</div>
+    <div class="q-stem">CAHSR sets its train ticket price at $200 per ride. At that price, trains run almost empty — most people choose to drive or fly instead. What does this tell us about the $200 price?</div>
+    <div class="choices" id="q8">
+      <button class="choice-btn" onclick="mc('q8',this,'wrong','If the price were below equilibrium, the train would be overbooked — not empty.')"><div class="opt">A</div><div class="txt">The price is below equilibrium — they should raise it further</div></button>
+      <button class="choice-btn" onclick="mc('q8',this,'right','Correct! Empty trains mean demand is too low at that price — the price is above equilibrium and needs to come down to attract riders.')"><div class="opt">B</div><div class="txt">The price is above equilibrium — demand is too low at $200</div></button>
+      <button class="choice-btn" onclick="mc('q8',this,'wrong','Empty trains are a clear sign the price is wrong — equilibrium means supply meets demand at a price people will pay.')"><div class="opt">C</div><div class="txt">The price is at equilibrium — supply and demand are balanced</div></button>
+      <button class="choice-btn" onclick="mc('q8',this,'wrong','Supply here refers to train seats available — the issue is on the demand side, not supply.')"><div class="opt">D</div><div class="txt">Supply is too low — they need to add more train seats</div></button>
+    </div>
+    <div class="feedback" id="fb-q8"></div>
+  </div>
+
+  <div class="bottom-nav">
+    <button class="btn-nav" onclick="showPage('s2')">← Back</button>
+    <button class="btn-nav primary" onclick="showPage('s4')">Next Section →</button>
+  </div>
+</div>
+
+<!-- SECTION 4: OPPORTUNITY COST -->
+<div class="page" id="page-s4">
+  <div class="section-header">
+    <div class="section-tag">Section 4 of 6 — Questions 9–10</div>
+    <div class="section-title">Opportunity Cost & Decision Making</div>
+    <div class="section-context">Every choice has a cost — not just in money, but in what you gave up. The opportunity cost is the value of the next best option you didn't pick.</div>
+  </div>
+
+  <!-- Q9 -->
+  <div class="q-wrap">
+    <div class="q-num-tag">Question 9 — CAHSR Connection 🚄</div>
+    <div class="q-stem">California has spent over $12 billion on CAHSR so far. What is the best definition of the opportunity cost of that decision?</div>
+    <div class="choices" id="q9">
+      <button class="choice-btn" onclick="mc('q9',this,'wrong','The financial cost of the project itself is just the price tag — not the opportunity cost.')"><div class="opt">A</div><div class="txt">The $12 billion price tag of building the train</div></button>
+      <button class="choice-btn" onclick="mc('q9',this,'wrong','The number of workers isn\'t the opportunity cost — it\'s actually an argument in favor of the project.')"><div class="opt">B</div><div class="txt">The number of construction workers hired to build it</div></button>
+      <button class="choice-btn" onclick="mc('q9',this,'right','Correct! Opportunity cost is what you gave up — the schools, housing, or other projects that $12 billion could have funded instead.')"><div class="opt">C</div><div class="txt">The value of what else could have been built with that $12 billion — schools, housing, highways</div></button>
+      <button class="choice-btn" onclick="mc('q9',this,'wrong','Future revenue is a benefit of the project, not the opportunity cost of choosing it.')"><div class="opt">D</div><div class="txt">The future revenue the train will earn once completed</div></button>
+    </div>
+    <div class="feedback" id="fb-q9"></div>
+  </div>
+
+  <!-- Q10 -->
+  <div class="q-wrap">
+    <div class="q-num-tag">Question 10 — Gun Laws Connection ⚖️</div>
+    <div class="q-stem">California dedicates significant police time and state budget to enforcing its gun laws — background checks, prosecutions, and training. An economist says this has an opportunity cost. What do they mean?</div>
+    <div class="choices" id="q10">
+      <button class="choice-btn" onclick="mc('q10',this,'wrong','Opportunity cost isn\'t about whether the laws are good or bad — it\'s about what was given up to enforce them.')"><div class="opt">A</div><div class="txt">The gun laws are too strict and should be removed</div></button>
+      <button class="choice-btn" onclick="mc('q10',this,'right','Correct! The resources spent on gun law enforcement could have gone to other public safety programs, mental health, or schools — that\'s the opportunity cost.')"><div class="opt">B</div><div class="txt">The money and police time spent on gun enforcement could have been used for other services like mental health or schools</div></button>
+      <button class="choice-btn" onclick="mc('q10',this,'wrong','Opportunity cost isn\'t about popularity — it\'s about the economic value of alternatives not chosen.')"><div class="opt">C</div><div class="txt">Most Californians don\'t support the gun laws</div></button>
+      <button class="choice-btn" onclick="mc('q10',this,'wrong','Enforcement costs being zero would eliminate the opportunity cost — but the question says significant resources are spent.')"><div class="opt">D</div><div class="txt">Gun law enforcement costs the state nothing</div></button>
+    </div>
+    <div class="feedback" id="fb-q10"></div>
+  </div>
+
+  <div class="bottom-nav">
+    <button class="btn-nav" onclick="showPage('s3')">← Back</button>
+    <button class="btn-nav primary" onclick="showPage('s5')">Next Section →</button>
+  </div>
+</div>
+
+<!-- SECTION 5: GDP -->
+<div class="page" id="page-s5">
+  <div class="section-header">
+    <div class="section-tag">Section 5 of 6 — Questions 11–12</div>
+    <div class="section-title">GDP</div>
+    <div class="section-context">GDP (Gross Domestic Product) is the total value of all goods and services produced in a country in one year. It's the main way we measure whether an economy is growing or shrinking.</div>
+  </div>
+
+  <!-- Q11 -->
+  <div class="q-wrap">
+    <div class="q-num-tag">Question 11 — CAHSR Connection 🚄</div>
+    <div class="q-stem">The federal government spends $3 billion on CAHSR construction this year. How does this affect US GDP?</div>
+    <div class="choices" id="q11">
+      <button class="choice-btn" onclick="mc('q11',this,'wrong','Government spending is one of the four components of GDP — it directly adds to it.')"><div class="opt">A</div><div class="txt">It has no effect — government spending doesn\'t count toward GDP</div></button>
+      <button class="choice-btn" onclick="mc('q11',this,'wrong','Government spending adds to GDP — it doesn\'t subtract from it directly.')"><div class="opt">B</div><div class="txt">GDP decreases because the money comes from taxes</div></button>
+      <button class="choice-btn" onclick="mc('q11',this,'right','Correct! Government spending is a direct component of GDP — spending on CAHSR increases GDP even if the project is controversial.')"><div class="opt">C</div><div class="txt">GDP increases because government spending is one of its four components</div></button>
+      <button class="choice-btn" onclick="mc('q11',this,'wrong','The effect is immediate — it happens in the year the money is spent, not just when the train is done.')"><div class="opt">D</div><div class="txt">GDP only increases after the train is finished and running</div></button>
+    </div>
+    <div class="feedback" id="fb-q11"></div>
+  </div>
+
+  <!-- Q12 -->
+  <div class="q-wrap">
+    <div class="q-num-tag">Question 12</div>
+    <div class="q-stem">A student says: "GDP going up always means life is getting better for everyone." Which statement best challenges this idea?</div>
+    <div class="choices" id="q12">
+      <button class="choice-btn" onclick="mc('q12',this,'wrong','GDP does measure production — but the student\'s point is about whether that means life is better, which GDP doesn\'t fully capture.')"><div class="opt">A</div><div class="txt">GDP doesn\'t measure anything real — it\'s just a number economists made up</div></button>
+      <button class="choice-btn" onclick="mc('q12',this,'wrong','GDP growth usually does mean more jobs — but that still doesn\'t mean everyone benefits equally.')"><div class="opt">B</div><div class="txt">GDP growth never leads to more jobs</div></button>
+      <button class="choice-btn" onclick="mc('q12',this,'right','Correct! GDP can rise from spending on things like ER visits from gun violence or building a delayed train — those increase GDP but don\'t necessarily improve quality of life or distribute wealth equally.')"><div class="opt">C</div><div class="txt">GDP can increase from harmful or wasteful spending, and doesn\'t measure inequality or quality of life</div></button>
+      <button class="choice-btn" onclick="mc('q12',this,'wrong','GDP is actually measured every year — quarterly, in fact.')"><div class="opt">D</div><div class="txt">GDP is only measured once every decade</div></button>
+    </div>
+    <div class="feedback" id="fb-q12"></div>
+  </div>
+
+  <div class="bottom-nav">
+    <button class="btn-nav" onclick="showPage('s4')">← Back</button>
+    <button class="btn-nav primary" onclick="showPage('s6')">Next Section →</button>
+  </div>
+</div>
+
+<!-- SECTION 6: PHILOSOPHIES -->
+<div class="page" id="page-s6">
+  <div class="section-header">
+    <div class="section-tag">Section 6 of 6 — Questions 13–15</div>
+    <div class="section-title">Economic Philosophies</div>
+    <div class="section-context">Every economic decision comes down to one big question: how much should the government be involved? Different economic philosophies answer that differently.</div>
+  </div>
+
+  <!-- Q13 -->
+  <div class="q-wrap">
+    <div class="q-num-tag">Question 13</div>
+    <div class="q-stem">A politician argues: "The government should not be funding CAHSR. Private companies would build it faster and cheaper if we got out of the way." Which economic philosophy does this reflect?</div>
+    <div class="choices" id="q13">
+      <button class="choice-btn" onclick="mc('q13',this,'wrong','Keynesian economics supports government spending on infrastructure — the opposite of this argument.')"><div class="opt">A</div><div class="txt">Keynesian economics</div></button>
+      <button class="choice-btn" onclick="mc('q13',this,'wrong','Socialism supports public ownership of transportation — also the opposite of this argument.')"><div class="opt">B</div><div class="txt">Socialism</div></button>
+      <button class="choice-btn" onclick="mc('q13',this,'right','Correct! Free market / capitalism argues private business outperforms government — less government involvement leads to better outcomes.')"><div class="opt">C</div><div class="txt">Free market / capitalism</div></button>
+      <button class="choice-btn" onclick="mc('q13',this,'wrong','Mixed economy still involves significant government participation — this argument wants the government out entirely.')"><div class="opt">D</div><div class="txt">Mixed economy</div></button>
+    </div>
+    <div class="feedback" id="fb-q13"></div>
+  </div>
+
+  <!-- Q14 -->
+  <div class="q-wrap">
+    <div class="q-num-tag">Question 14 — Gun Laws Connection ⚖️</div>
+    <div class="q-stem">An economist argues that California's strict gun laws are justified because the economic cost of gun violence — ER bills, lost productivity, incarceration — is too high for society to ignore. Which philosophy best supports this reasoning?</div>
+    <div class="choices" id="q14">
+      <button class="choice-btn" onclick="mc('q14',this,'wrong','Supply-side economics focuses on cutting taxes to grow the economy — not on regulating markets to reduce social costs.')"><div class="opt">A</div><div class="txt">Supply-side economics</div></button>
+      <button class="choice-btn" onclick="mc('q14',this,'wrong','Pure free market economics would argue against regulation, even if there are social costs.')"><div class="opt">B</div><div class="txt">Pure free market economics</div></button>
+      <button class="choice-btn" onclick="mc('q14',this,'right','Correct! Keynesian and mixed economy thinking supports government intervention when markets produce harmful outcomes for society — like gun violence costs.')"><div class="opt">C</div><div class="txt">Keynesian / mixed economy — government should intervene when markets cause harm</div></button>
+      <button class="choice-btn" onclick="mc('q14',this,'wrong','Laissez-faire means hands-off — the opposite of using regulation to address social costs.')"><div class="opt">D</div><div class="txt">Laissez-faire — the government should stay completely hands-off</div></button>
+    </div>
+    <div class="feedback" id="fb-q14"></div>
+  </div>
+
+  <!-- Q15 -->
+  <div class="q-wrap">
+    <div class="q-num-tag">Question 15 — Putting It All Together 🚄⚖️🏛️</div>
+    <div class="q-stem">California has the highest income taxes in the US, funds CAHSR through government spending, and has the strictest gun regulations in the country. Which combination of economic philosophies best describes California's overall economic approach?</div>
+    <div class="choices" id="q15">
+      <button class="choice-btn" onclick="mc('q15',this,'wrong','Pure free market capitalism would minimize taxes, government spending, and regulation — the opposite of California\'s approach.')"><div class="opt">A</div><div class="txt">Pure free market capitalism</div></button>
+      <button class="choice-btn" onclick="mc('q15',this,'wrong','Full socialism would mean the government owns all major industries — California still has a large private sector.')"><div class="opt">B</div><div class="txt">Full socialism</div></button>
+      <button class="choice-btn" onclick="mc('q15',this,'right','Correct! California uses high taxes and government spending (Keynesian fiscal policy) alongside heavy regulation (mixed economy) — a blend of both approaches.')"><div class="opt">C</div><div class="txt">Keynesian + mixed economy — high government spending and regulation alongside a private sector</div></button>
+      <button class="choice-btn" onclick="mc('q15',this,'wrong','Supply-side policy cuts taxes to stimulate private growth — California does the opposite with the highest state income taxes in the US.')"><div class="opt">D</div><div class="txt">Supply-side economics — cutting taxes to grow the private sector</div></button>
+    </div>
+    <div class="feedback" id="fb-q15"></div>
+  </div>
+
+  <div class="bottom-nav">
+    <button class="btn-nav" onclick="showPage('s5')">← Back</button>
+    <button class="btn-nav primary" onclick="showPage('sa')">Short Answer →</button>
+  </div>
+</div>
+
+<!-- SHORT ANSWER -->
+<div class="page" id="page-sa">
+  <div class="section-header">
+    <div class="section-tag">Short Answer — Teacher Graded</div>
+    <div class="section-title">Written Response</div>
+    <div class="section-context">Answer each question in 2–4 sentences. Use vocabulary from the lessons. Tap "Show rubric" under each question to see what a strong answer includes.</div>
+  </div>
+
+  <!-- SA1 -->
+  <div class="sa-wrap">
+    <div class="q-num-tag">Short Answer 1</div>
+    <div class="sa-stem">Explain the difference between monetary policy and fiscal policy. Give one real example of each from what you learned about California.</div>
+    <div class="sa-prompt">Write 2–4 sentences using vocab from the lesson.</div>
+    <textarea rows="5" placeholder="Type your answer here..."></textarea>
+    <button class="sa-rubric-btn" onclick="toggleRubric('r1')">Show rubric <span>▾</span></button>
+    <div class="sa-rubric" id="r1">
+      <p><strong>Strong answer includes:</strong></p>
+      <p>✓ Definition of monetary policy (Fed, interest rates, money supply)</p>
+      <p>✓ Definition of fiscal policy (Congress, taxes, government spending)</p>
+      <p>✓ A real CA example of monetary policy — e.g. Fed rate hikes affecting CAHSR loan costs</p>
+      <p>✓ A real CA example of fiscal policy — e.g. federal grants for CAHSR, or CA spending on gun violence prevention</p>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- SA2 -->
+  <div class="sa-wrap">
+    <div class="q-num-tag">Short Answer 2</div>
+    <div class="sa-stem">California spent over $12 billion on high-speed rail. Using the concept of opportunity cost, explain what that decision means — and give one example of what California could have done with that money instead.</div>
+    <div class="sa-prompt">Write 2–4 sentences using vocab from the lesson.</div>
+    <textarea rows="5" placeholder="Type your answer here..."></textarea>
+    <button class="sa-rubric-btn" onclick="toggleRubric('r2')">Show rubric <span>▾</span></button>
+    <div class="sa-rubric" id="r2">
+      <p><strong>Strong answer includes:</strong></p>
+      <p>✓ Correct definition of opportunity cost (value of the next best option given up)</p>
+      <p>✓ Application: choosing CAHSR means NOT choosing something else</p>
+      <p>✓ A specific alternative — schools, housing, highways, mental health services</p>
+      <p>✓ Recognition that this doesn't mean the train was wrong — just that every choice has a cost</p>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- SA3 -->
+  <div class="sa-wrap">
+    <div class="q-num-tag">Short Answer 3</div>
+    <div class="sa-stem">A free market economist and a Keynesian economist are debating California's gun laws. What would each one argue? Use what you know about both philosophies.</div>
+    <div class="sa-prompt">Write 3–5 sentences. You don't have to pick a side — just explain both views accurately.</div>
+    <textarea rows="6" placeholder="Type your answer here..."></textarea>
+    <button class="sa-rubric-btn" onclick="toggleRubric('r3')">Show rubric <span>▾</span></button>
+    <div class="sa-rubric" id="r3">
+      <p><strong>Strong answer includes:</strong></p>
+      <p>✓ Free market view: regulation restricts supply, raises prices, limits individual freedom — government should stay out</p>
+      <p>✓ Keynesian/mixed economy view: gun violence creates massive economic costs (ER, lost productivity) — government intervention is justified to reduce those costs</p>
+      <p>✓ Student doesn't need to agree with either — just show they understand what each philosophy argues</p>
+      <p>✓ Bonus: student connects this to supply and demand (how regulation affects gun market)</p>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <button class="btn-nav" onclick="showPage('s6')">← Back</button>
+    <button class="btn-nav primary" onclick="showResults()">See My Score →</button>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div class="page" id="page-results">
+  <div class="result-hero">
+    <div class="result-label">Multiple Choice Score</div>
+    <div class="result-score" id="final-score">0/15</div>
+    <div class="result-grade" id="final-grade"></div>
+    <div class="result-msg" id="final-msg"></div>
+  </div>
+
+  <div class="sa-note">📝 Short answer questions are not auto-graded. Your teacher will review those separately using the rubrics shown under each question.</div>
+
+  <h3 style="font-size:18px;margin-bottom:12px">Section Breakdown</h3>
+  <div class="breakdown" id="breakdown"></div>
+
+  <div class="bottom-nav">
+    <button class="btn-nav primary" onclick="restart()" style="flex:1">Start Over</button>
+  </div>
+</div>
+
+<script>
+// State
+const answers = {}; // qid -> 'right' or 'wrong'
+const sectionMap = {
+  s1: { label: 'Federal Reserve', qs: ['q1','q2','q3'] },
+  s2: { label: 'Fiscal Policy', qs: ['q4','q5','q6'] },
+  s3: { label: 'Supply & Demand', qs: ['q7','q8'] },
+  s4: { label: 'Opportunity Cost', qs: ['q9','q10'] },
+  s5: { label: 'GDP', qs: ['q11','q12'] },
+  s6: { label: 'Economic Philosophies', qs: ['q13','q14','q15'] },
+};
+const totalMC = 15;
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  window.scrollTo(0, 0);
+  updateProgress(id);
+}
+
+function updateProgress(page) {
+  const order = ['cover','s1','s2','s3','s4','s5','s6','sa','results'];
+  const idx = order.indexOf(page);
+  const pct = idx <= 0 ? 0 : Math.round((idx / (order.length - 1)) * 100);
+  document.getElementById('main-prog').style.width = pct + '%';
+}
+
+function mc(qid, btn, type, msg) {
+  const wrap = btn.closest('.choices');
+  if (wrap.dataset.answered) return;
+  wrap.dataset.answered = '1';
+  answers[qid] = type;
+  btn.classList.add(type === 'right' ? 'correct' : 'incorrect');
+  const fb = document.getElementById('fb-' + qid);
+  fb.textContent = msg;
+  fb.className = 'feedback show ' + (type === 'right' ? 'good' : 'bad');
+  updateLiveScore();
+}
+
+function updateLiveScore() {
+  const correct = Object.values(answers).filter(v => v === 'right').length;
+  const answered = Object.values(answers).length;
+  document.getElementById('live-score').textContent = correct + ' / ' + totalMC;
+}
+
+function toggleRubric(id) {
+  document.getElementById(id).classList.toggle('show');
+}
+
+function showResults() {
+  const correct = Object.values(answers).filter(v => v === 'right').length;
+  const pct = Math.round((correct / totalMC) * 100);
+  document.getElementById('final-score').textContent = correct + '/' + totalMC;
+
+  let grade, msg;
+  if (pct >= 93) { grade = 'A'; msg = 'Outstanding — you clearly connected all the big ideas. Strong work.'; }
+  else if (pct >= 90) { grade = 'A−'; msg = 'Excellent work — you have a strong grasp of all six concepts.'; }
+  else if (pct >= 87) { grade = 'B+'; msg = 'Great job — you\'re solid on most concepts. Review the ones you missed.'; }
+  else if (pct >= 83) { grade = 'B'; msg = 'Good work — most concepts are solid. A little review on the tricky ones will help.'; }
+  else if (pct >= 80) { grade = 'B−'; msg = 'Good effort — go back and look at the sections where you missed questions.'; }
+  else if (pct >= 70) { grade = 'C'; msg = 'You\'ve got the basics. Revisit the lessons where you struggled before the next class.'; }
+  else { grade = 'Needs Review'; msg = 'Keep working at it — go back through the lessons and try again. You\'ve got this.'; }
+
+  document.getElementById('final-grade').textContent = grade + ' (' + pct + '%)';
+  document.getElementById('final-msg').textContent = msg;
+
+  // Breakdown
+  const bd = document.getElementById('breakdown');
+  bd.innerHTML = '';
+  Object.entries(sectionMap).forEach(([key, sec]) => {
+    const secCorrect = sec.qs.filter(q => answers[q] === 'right').length;
+    const secTotal = sec.qs.length;
+    const row = document.createElement('div');
+    row.className = 'breakdown-row';
+    row.innerHTML = `
+      <div>
+        <div class="breakdown-title">${sec.label}</div>
+        <div class="breakdown-sub">${secTotal} question${secTotal > 1 ? 's' : ''}</div>
+      </div>
+      <div class="breakdown-score ${secCorrect < Math.ceil(secTotal / 2) ? 'bad' : ''}">${secCorrect}/${secTotal}</div>
+    `;
+    bd.appendChild(row);
+  });
+
+  showPage('results');
+}
+
+function restart() {
+  // Clear answers
+  Object.keys(answers).forEach(k => delete answers[k]);
+  // Reset all choice groups
+  document.querySelectorAll('.choices').forEach(w => {
+    delete w.dataset.answered;
+    w.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('correct','incorrect'));
+  });
+  document.querySelectorAll('.feedback').forEach(f => { f.className = 'feedback'; f.textContent = ''; });
+  document.querySelectorAll('textarea').forEach(t => t.value = '');
+  document.querySelectorAll('.sa-rubric').forEach(r => r.classList.remove('show'));
+  document.getElementById('live-score').textContent = '0 / 15';
+  showPage('cover');
+}
+</script>
+</body>
+</html>

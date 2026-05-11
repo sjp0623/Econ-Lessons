@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#0a1628">
+<title>CA Economics — 6 Lessons</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  :root {
+    --bg: #0a1628;
+    --bg2: #111f35;
+    --bg3: #172540;
+    --card: #1a2d47;
+    --card2: #1f3554;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.14);
+    --text: #f0f4ff;
+    --text2: #8fa8c8;
+    --text3: #5a7a9a;
+    --green: #1fd99a;
+    --green2: #0fa872;
+    --green-bg: rgba(31,217,154,0.12);
+    --purple: #9b8ef5;
+    --purple-bg: rgba(155,142,245,0.12);
+    --amber: #f5b942;
+    --amber-bg: rgba(245,185,66,0.1);
+    --red: #f56060;
+    --red-bg: rgba(245,96,96,0.1);
+    --radius: 14px;
+    --radius-sm: 9px;
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Barlow', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, .cond { font-family: 'Barlow Condensed', sans-serif; }
+
+  /* STICKY HEADER */
+  .top-bar {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(10,22,40,0.97);
+    backdrop-filter: blur(8px);
+    border-bottom: 0.5px solid var(--border);
+    padding: 12px 16px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .top-bar-title { font-family: 'Barlow Condensed', sans-serif; font-size: 17px; font-weight: 700; color: var(--text); flex: 1; }
+  .menu-btn {
+    background: var(--card); border: 0.5px solid var(--border2);
+    color: var(--text); width: 38px; height: 38px;
+    border-radius: var(--radius-sm); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+  .back-btn {
+    background: none; border: none; color: var(--green);
+    font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 700;
+    cursor: pointer; padding: 4px 0; display: none; align-items: center; gap: 4px;
+  }
+  .back-btn.visible { display: flex; }
+
+  /* DRAWER NAV */
+  .drawer-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200;
+    opacity: 0; pointer-events: none; transition: opacity .25s;
+  }
+  .drawer-overlay.open { opacity: 1; pointer-events: all; }
+  .drawer {
+    position: fixed; top: 0; right: -280px; width: 280px; height: 100vh;
+    background: var(--bg2); border-left: 0.5px solid var(--border2);
+    z-index: 201; transition: right .25s ease; padding: 24px 0; overflow-y: auto;
+  }
+  .drawer.open { right: 0; }
+  .drawer-head {
+    font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase; color: var(--text3);
+    padding: 0 20px 12px;
+  }
+  .drawer-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 13px 20px; cursor: pointer; transition: background .15s;
+    border-bottom: 0.5px solid var(--border);
+  }
+  .drawer-item:hover, .drawer-item.active { background: var(--bg3); }
+  .drawer-num {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: var(--card); display: flex; align-items: center; justify-content: center;
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 14px;
+    color: var(--text2); flex-shrink: 0;
+  }
+  .drawer-item.active .drawer-num { background: var(--green); color: #000; }
+  .drawer-text { font-size: 14px; font-weight: 500; color: var(--text); }
+  .drawer-sub { font-size: 12px; color: var(--text3); margin-top: 1px; }
+
+  /* PAGES */
+  .page { display: none; padding: 20px 16px 80px; max-width: 540px; margin: 0 auto; }
+  .page.active { display: block; }
+
+  /* PROGRESS */
+  .prog-wrap { height: 4px; background: var(--card); border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
+  .prog-fill { height: 100%; background: var(--green); border-radius: 4px; transition: width .4s ease; }
+
+  /* LESSON HEADER */
+  .lesson-eyebrow {
+    font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase; color: var(--green); margin-bottom: 6px;
+  }
+  .lesson-title { font-size: 30px; font-weight: 800; line-height: 1.1; margin-bottom: 12px; }
+  .big-idea {
+    font-size: 15px; color: var(--text2); line-height: 1.65;
+    padding: 14px 16px; background: var(--card);
+    border-radius: var(--radius); border-left: 3px solid var(--purple);
+    margin-bottom: 20px;
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--card); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 16px; margin-bottom: 14px;
+  }
+  .card h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+  .card p { font-size: 15px; color: var(--text2); line-height: 1.65; margin-bottom: 8px; }
+  .card p:last-child { margin-bottom: 0; }
+  .card strong { color: var(--text); font-weight: 600; }
+
+  /* VOCAB */
+  .vocab-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+  .vocab-card { background: var(--card2); border-radius: var(--radius-sm); padding: 12px; border: 0.5px solid var(--border); }
+  .vocab-term { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--green); margin-bottom: 4px; }
+  .vocab-def { font-size: 13px; color: var(--text2); line-height: 1.5; }
+
+  /* SCENARIO BLOCKS */
+  .scenario { border-radius: var(--radius); padding: 14px 16px; margin-bottom: 14px; border: 0.5px solid var(--border); }
+  .scenario.train { background: rgba(31,217,154,0.07); border-color: rgba(31,217,154,0.2); }
+  .scenario.guns { background: rgba(155,142,245,0.07); border-color: rgba(155,142,245,0.2); }
+  .scenario.gov { background: rgba(245,185,66,0.07); border-color: rgba(245,185,66,0.2); }
+  .scenario-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .scenario.train .scenario-label { color: var(--green); }
+  .scenario.guns .scenario-label { color: var(--purple); }
+  .scenario.gov .scenario-label { color: var(--amber); }
+  .scenario p { font-size: 14px; line-height: 1.65; color: var(--text2); }
+  .scenario p em { color: var(--text); font-style: italic; }
+
+  /* DIVIDER */
+  .divider { height: 0.5px; background: var(--border); margin: 20px 0; }
+
+  /* CHOICE BUTTONS */
+  .choice-label { font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 10px; }
+  .choice-sub { font-size: 13px; color: var(--text3); margin-bottom: 12px; }
+  .choices { display: grid; gap: 10px; margin-bottom: 10px; }
+  .choice-btn {
+    background: var(--card); border: 0.5px solid var(--border2);
+    border-radius: var(--radius); padding: 14px 16px; cursor: pointer;
+    text-align: left; transition: all .15s; width: 100%;
+  }
+  .choice-btn:active { transform: scale(0.98); }
+  .choice-btn .c-opt { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--text3); margin-bottom: 4px; }
+  .choice-btn .c-text { font-size: 14px; color: var(--text); line-height: 1.5; }
+  .choice-btn.correct { background: rgba(31,217,154,0.12); border-color: var(--green); }
+  .choice-btn.incorrect { background: rgba(245,96,96,0.1); border-color: var(--red); }
+  .feedback {
+    font-size: 14px; line-height: 1.6; padding: 12px 14px;
+    border-radius: var(--radius-sm); display: none; margin-top: 4px;
+  }
+  .feedback.show { display: block; }
+  .feedback.good { background: rgba(31,217,154,0.1); color: var(--green); border: 0.5px solid rgba(31,217,154,0.25); }
+  .feedback.bad { background: rgba(245,96,96,0.1); color: #ff8f8f; border: 0.5px solid rgba(245,96,96,0.25); }
+
+  /* REVEAL */
+  .reveal-btn {
+    background: none; border: 0.5px solid var(--border2);
+    color: var(--text2); font-family: 'Barlow', sans-serif; font-size: 14px;
+    padding: 10px 16px; border-radius: var(--radius-sm); cursor: pointer;
+    width: 100%; text-align: left; transition: all .15s; display: flex; justify-content: space-between; align-items: center;
+  }
+  .reveal-btn:active { background: var(--card); }
+  .reveal-btn .arr { transition: transform .2s; }
+  .reveal-btn.open .arr { transform: rotate(180deg); }
+  .reveal-content { display: none; font-size: 14px; color: var(--text2); line-height: 1.65; padding: 12px 14px; background: var(--card2); border-radius: var(--radius-sm); margin-top: 6px; border: 0.5px solid var(--border); }
+  .reveal-content.show { display: block; }
+
+  /* Q BLOCK */
+  .q-block { background: var(--card2); border-left: 3px solid var(--amber); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; padding: 14px 16px; margin-bottom: 14px; }
+  .q-eyebrow { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--amber); margin-bottom: 6px; }
+  .q-block p { font-size: 14px; color: var(--text); line-height: 1.65; }
+
+  /* COMPARE TABLE */
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  .compare-side { background: var(--card); border-radius: var(--radius); padding: 14px; border: 0.5px solid var(--border); }
+  .compare-head { font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 10px; }
+  .compare-side.green .compare-head { color: var(--green); }
+  .compare-side.purple .compare-head { color: var(--purple); }
+  .compare-side ul { padding-left: 16px; }
+  .compare-side li { font-size: 13px; color: var(--text2); line-height: 1.7; }
+
+  /* SLIDER */
+  .slider-wrap { background: var(--card); border-radius: var(--radius); padding: 16px; margin-bottom: 14px; }
+  .slider-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .slider-tag { font-size: 12px; color: var(--text3); }
+  input[type=range] {
+    -webkit-appearance: none; width: 100%; height: 5px;
+    background: var(--card2); border-radius: 4px; outline: none; margin: 10px 0;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%;
+    background: var(--green); cursor: pointer; border: 3px solid var(--bg);
+  }
+  .sd-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+  .sd-stat { background: var(--card2); border-radius: var(--radius-sm); padding: 10px 12px; }
+  .sd-stat-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; margin-bottom: 4px; }
+  .sd-stat-label.d { color: var(--purple); }
+  .sd-stat-label.s { color: var(--green); }
+  .sd-val { font-size: 20px; font-weight: 700; color: var(--text); }
+
+  /* MATCHING */
+  .match-instructions { font-size: 13px; color: var(--text3); margin-bottom: 10px; }
+  .match-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+  .match-col-head { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--text3); margin-bottom: 6px; text-align: center; }
+  .match-col { display: flex; flex-direction: column; gap: 6px; }
+  .match-btn {
+    background: var(--card); border: 0.5px solid var(--border2);
+    border-radius: var(--radius-sm); padding: 10px 10px; cursor: pointer;
+    font-size: 12px; line-height: 1.5; color: var(--text2);
+    text-align: left; transition: all .15s; width: 100%;
+    font-family: 'Barlow', sans-serif; min-height: 56px;
+  }
+  .match-btn:active { transform: scale(0.97); }
+  .match-btn.sel { border-color: var(--purple); background: var(--purple-bg); color: var(--text); }
+  .match-btn.matched { border-color: var(--green); background: var(--green-bg); color: var(--green); pointer-events: none; }
+  .match-btn.wrong { border-color: var(--red); background: var(--red-bg); }
+  .match-score { font-size: 14px; font-weight: 600; color: var(--green); min-height: 20px; }
+
+  /* OC CHOICES */
+  .oc-btn {
+    background: var(--card); border: 0.5px solid var(--border2);
+    border-radius: var(--radius); padding: 14px 16px;
+    cursor: pointer; text-align: left; width: 100%;
+    margin-bottom: 8px; transition: all .15s;
+    font-family: 'Barlow', sans-serif;
+  }
+  .oc-btn:active { transform: scale(0.98); }
+  .oc-btn .oc-opt { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--text3); margin-bottom: 5px; }
+  .oc-btn .oc-text { font-size: 14px; color: var(--text); line-height: 1.5; }
+  .oc-result { font-size: 14px; line-height: 1.65; padding: 14px 16px; border-radius: var(--radius-sm); background: var(--green-bg); color: var(--green); border: 0.5px solid rgba(31,217,154,0.25); display: none; margin-top: 4px; }
+  .oc-result.show { display: block; }
+
+  /* GDP SECTORS */
+  .sector-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+  .sector-btn {
+    background: var(--card); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 14px 12px;
+    cursor: pointer; text-align: center; transition: all .15s;
+    font-family: 'Barlow', sans-serif;
+  }
+  .sector-btn:active { transform: scale(0.97); }
+  .sector-btn .s-icon { font-size: 26px; margin-bottom: 6px; }
+  .sector-btn .s-name { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+  .sector-btn .s-pct { font-size: 12px; color: var(--text3); }
+  .sector-btn.sel { border-color: var(--green); background: var(--green-bg); }
+  .sector-detail { font-size: 14px; color: var(--text2); line-height: 1.65; padding: 14px 16px; background: var(--card); border-radius: var(--radius); border: 0.5px solid var(--border); display: none; }
+  .sector-detail.show { display: block; }
+
+  /* PHILOSOPHY CARDS */
+  .phil-card { border-radius: var(--radius); padding: 16px; margin-bottom: 12px; border: 0.5px solid var(--border); }
+  .phil-card h3 { font-size: 19px; font-weight: 700; margin-bottom: 8px; }
+  .phil-card p { font-size: 14px; color: var(--text2); line-height: 1.6; margin-bottom: 6px; }
+  .phil-card .connect { font-size: 13px; color: var(--text3); line-height: 1.6; border-top: 0.5px solid var(--border); padding-top: 10px; margin-top: 6px; }
+  .phil-card .connect strong { font-weight: 600; }
+  .phil-card.green { background: rgba(31,217,154,0.06); border-color: rgba(31,217,154,0.2); }
+  .phil-card.green h3 { color: var(--green); }
+  .phil-card.purple { background: rgba(155,142,245,0.06); border-color: rgba(155,142,245,0.2); }
+  .phil-card.purple h3 { color: var(--purple); }
+  .phil-card.amber { background: rgba(245,185,66,0.06); border-color: rgba(245,185,66,0.2); }
+  .phil-card.amber h3 { color: var(--amber); }
+  .phil-card.red { background: rgba(245,96,96,0.06); border-color: rgba(245,96,96,0.2); }
+  .phil-card.red h3 { color: var(--red); }
+
+  /* FINAL QUIZ TAPS */
+  .tap-card {
+    background: var(--card); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 14px 16px; margin-bottom: 10px; cursor: pointer;
+    transition: background .15s;
+  }
+  .tap-card:active { background: var(--card2); }
+  .tap-eyebrow { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text3); margin-bottom: 6px; }
+  .tap-q { font-size: 14px; color: var(--text); line-height: 1.6; font-style: italic; }
+  .tap-ans { display: none; margin-top: 10px; font-size: 14px; color: var(--green); line-height: 1.6; border-top: 0.5px solid var(--border); padding-top: 10px; }
+  .tap-ans.show { display: block; }
+  .tap-hint { font-size: 12px; color: var(--text3); text-align: center; margin-bottom: 14px; }
+
+  /* HERO / COMPLETE */
+  .hero-complete { background: linear-gradient(135deg, #0e2a1a 0%, #0a1628 60%); border: 0.5px solid rgba(31,217,154,0.25); border-radius: var(--radius); padding: 20px; margin: 20px 0; }
+  .hero-complete h2 { font-size: 26px; font-weight: 800; color: var(--text); margin-bottom: 8px; }
+  .hero-complete p { font-size: 14px; color: var(--text2); line-height: 1.65; }
+  .thread-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
+  .chip { font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 20px; letter-spacing: .3px; }
+  .chip-g { background: rgba(31,217,154,0.15); color: var(--green); }
+  .chip-p { background: rgba(155,142,245,0.15); color: var(--purple); }
+  .chip-a { background: rgba(245,185,66,0.1); color: var(--amber); }
+
+  /* HOME */
+  .home-hero { background: linear-gradient(135deg, #0a1e35 0%, #0a1628 100%); border-radius: var(--radius); padding: 22px 18px; margin-bottom: 18px; border: 0.5px solid rgba(31,217,154,0.15); }
+  .home-eyebrow { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--green); margin-bottom: 6px; }
+  .home-hero h1 { font-size: 28px; font-weight: 800; line-height: 1.15; margin-bottom: 10px; }
+  .home-hero p { font-size: 14px; color: var(--text2); line-height: 1.65; }
+  .threads-section { margin-bottom: 18px; }
+  .threads-head { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text3); margin-bottom: 10px; }
+  .thread-item { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 10px; }
+  .thread-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+  .thread-dot.g { background: var(--green); }
+  .thread-dot.p { background: var(--purple); }
+  .thread-dot.a { background: var(--amber); }
+  .thread-item p { font-size: 14px; color: var(--text2); line-height: 1.6; }
+  .lesson-list { display: flex; flex-direction: column; gap: 8px; }
+  .lesson-item {
+    background: var(--card); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 14px 16px;
+    cursor: pointer; display: flex; align-items: center; gap: 14px;
+    transition: all .15s;
+  }
+  .lesson-item:active { background: var(--card2); transform: scale(0.99); }
+  .lesson-num-badge {
+    width: 38px; height: 38px; border-radius: 10px;
+    background: var(--green); color: #000;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 18px;
+    flex-shrink: 0;
+  }
+  .lesson-item-text { flex: 1; }
+  .lesson-item-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+  .lesson-item-sub { font-size: 12px; color: var(--text3); }
+  .lesson-item-arrow { font-size: 18px; color: var(--text3); }
+  .lesson-chips { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
+  .lchip { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 20px; }
+  .lc-g { background: rgba(31,217,154,0.12); color: var(--green); }
+  .lc-p { background: rgba(155,142,245,0.12); color: var(--purple); }
+  .lc-a { background: rgba(245,185,66,0.1); color: var(--amber); }
+
+  /* NAV BOTTOM */
+  .bottom-nav { display: flex; gap: 8px; margin-top: 24px; }
+  .btn-nav {
+    flex: 1; padding: 14px; border-radius: var(--radius);
+    font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 700;
+    cursor: pointer; border: 0.5px solid var(--border2); background: var(--card);
+    color: var(--text2); letter-spacing: .3px; transition: all .15s;
+  }
+  .btn-nav.primary { background: var(--green); border-color: var(--green); color: #000; }
+  .btn-nav:active { transform: scale(0.97); }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <button class="back-btn" id="back-btn" onclick="goHome()">&#8592; Home</button>
+  <div class="top-bar-title" id="top-title">CA Economics</div>
+  <button class="menu-btn" onclick="openDrawer()" aria-label="Menu">&#9776;</button>
+</div>
+
+<!-- DRAWER -->
+<div class="drawer-overlay" id="overlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-head">Jump to lesson</div>
+  <div class="drawer-item" onclick="showPage('home');closeDrawer()">
+    <div class="drawer-num">🏠</div>
+    <div><div class="drawer-text">Home</div></div>
+  </div>
+  <div class="drawer-item" id="dnav-l1" onclick="showPage('l1');closeDrawer()">
+    <div class="drawer-num">1</div>
+    <div><div class="drawer-text">Federal Reserve</div><div class="drawer-sub">Monetary Policy</div></div>
+  </div>
+  <div class="drawer-item" id="dnav-l2" onclick="showPage('l2');closeDrawer()">
+    <div class="drawer-num">2</div>
+    <div><div class="drawer-text">Fiscal Policy</div><div class="drawer-sub">Congress & Spending</div></div>
+  </div>
+  <div class="drawer-item" id="dnav-l3" onclick="showPage('l3');closeDrawer()">
+    <div class="drawer-num">3</div>
+    <div><div class="drawer-text">Supply & Demand</div><div class="drawer-sub">How prices work</div></div>
+  </div>
+  <div class="drawer-item" id="dnav-l4" onclick="showPage('l4');closeDrawer()">
+    <div class="drawer-num">4</div>
+    <div><div class="drawer-text">Opportunity Cost</div><div class="drawer-sub">Every choice has a price</div></div>
+  </div>
+  <div class="drawer-item" id="dnav-l5" onclick="showPage('l5');closeDrawer()">
+    <div class="drawer-num">5</div>
+    <div><div class="drawer-text">GDP</div><div class="drawer-sub">Measuring the economy</div></div>
+  </div>
+  <div class="drawer-item" id="dnav-l6" onclick="showPage('l6');closeDrawer()">
+    <div class="drawer-num">6</div>
+    <div><div class="drawer-text">Economic Philosophies</div><div class="drawer-sub">The big ideas</div></div>
+  </div>
+</div>
+
+<!-- HOME -->
+<div class="page active" id="page-home">
+  <div class="home-hero">
+    <div class="home-eyebrow">Economics — 6 Lessons</div>
+    <h1>California, Trains, Guns & Money</h1>
+    <p>Big economics ideas — tied to things happening in your state right now.</p>
+    <div class="thread-chips" style="margin-top:12px">
+      <span class="chip chip-g">🚄 CAHSR</span>
+      <span class="chip chip-p">⚖️ Gun Laws</span>
+      <span class="chip chip-a">🏛️ Role of Gov.</span>
+    </div>
+  </div>
+
+  <div class="threads-section">
+    <div class="threads-head">Three threads through every lesson</div>
+    <div class="thread-item">
+      <div class="thread-dot g"></div>
+      <p><strong style="color:#f0f4ff">CAHSR</strong> — California's high-speed rail is the biggest infrastructure project in US history. Always over budget. Always delayed. Why?</p>
+    </div>
+    <div class="thread-item">
+      <div class="thread-dot p"></div>
+      <p><strong style="color:#f0f4ff">Gun Laws in CA</strong> — CA has the strictest gun laws in the country. We'll look at why that's an economic debate, not just a legal one.</p>
+    </div>
+    <div class="thread-item">
+      <div class="thread-dot a"></div>
+      <p><strong style="color:#f0f4ff">Role of Gov.</strong> — Lessons 1 &amp; 2 go together: the Fed (monetary) vs. Congress (fiscal) — two arms of government, same goal.</p>
+    </div>
+  </div>
+
+  <div class="lesson-list">
+    <div class="lesson-item" onclick="showPage('l1')">
+      <div class="lesson-num-badge">1</div>
+      <div class="lesson-item-text">
+        <div class="lesson-item-title">The Federal Reserve</div>
+        <div class="lesson-item-sub">Monetary Policy — who controls the money supply?</div>
+        <div class="lesson-chips"><span class="lchip lc-a">🏛️ Gov. role</span><span class="lchip lc-g">🚄 Loans & rates</span></div>
+      </div>
+      <div class="lesson-item-arrow">›</div>
+    </div>
+    <div class="lesson-item" onclick="showPage('l2')">
+      <div class="lesson-num-badge">2</div>
+      <div class="lesson-item-text">
+        <div class="lesson-item-title">Fiscal Policy</div>
+        <div class="lesson-item-sub">How Congress taxes and spends</div>
+        <div class="lesson-chips"><span class="lchip lc-a">🏛️ Gov. role</span><span class="lchip lc-p">⚖️ Gun funding</span><span class="lchip lc-g">🚄 Rail budget</span></div>
+      </div>
+      <div class="lesson-item-arrow">›</div>
+    </div>
+    <div class="lesson-item" onclick="showPage('l3')">
+      <div class="lesson-num-badge">3</div>
+      <div class="lesson-item-text">
+        <div class="lesson-item-title">Supply & Demand</div>
+        <div class="lesson-item-sub">Why prices rise and fall</div>
+        <div class="lesson-chips"><span class="lchip lc-p">⚖️ Gun market</span><span class="lchip lc-g">🚄 Ticket prices</span></div>
+      </div>
+      <div class="lesson-item-arrow">›</div>
+    </div>
+    <div class="lesson-item" onclick="showPage('l4')">
+      <div class="lesson-num-badge">4</div>
+      <div class="lesson-item-text">
+        <div class="lesson-item-title">Opportunity Cost</div>
+        <div class="lesson-item-sub">Every choice has a price</div>
+        <div class="lesson-chips"><span class="lchip lc-g">🚄 Rail vs. highway</span><span class="lchip lc-p">⚖️ Policy tradeoffs</span></div>
+      </div>
+      <div class="lesson-item-arrow">›</div>
+    </div>
+    <div class="lesson-item" onclick="showPage('l5')">
+      <div class="lesson-num-badge">5</div>
+      <div class="lesson-item-text">
+        <div class="lesson-item-title">GDP</div>
+        <div class="lesson-item-sub">How we measure the whole economy</div>
+        <div class="lesson-chips"><span class="lchip lc-g">🚄 Does rail add to GDP?</span><span class="lchip lc-a">🏛️ Gov. spending</span></div>
+      </div>
+      <div class="lesson-item-arrow">›</div>
+    </div>
+    <div class="lesson-item" onclick="showPage('l6')">
+      <div class="lesson-num-badge">6</div>
+      <div class="lesson-item-text">
+        <div class="lesson-item-title">Economic Philosophies</div>
+        <div class="lesson-item-sub">Capitalism, Keynesian, Socialism & more</div>
+        <div class="lesson-chips"><span class="lchip lc-p">⚖️ Regulations</span><span class="lchip lc-g">🚄 Public vs. private</span></div>
+      </div>
+      <div class="lesson-item-arrow">›</div>
+    </div>
+  </div>
+</div>
+
+<!-- LESSON 1 -->
+<div class="page" id="page-l1">
+  <div class="prog-wrap"><div class="prog-fill" style="width:16%"></div></div>
+  <div class="lesson-eyebrow">Lesson 1 of 6</div>
+  <div class="lesson-title">The Federal Reserve & Monetary Policy</div>
+  <div class="big-idea">Big idea: There's a secret button that can make borrowing money cheaper or more expensive — and 12 people in a room decide when to push it.</div>
+
+  <div class="card">
+    <h3>What is the Federal Reserve?</h3>
+    <p>The <strong>Federal Reserve (the Fed)</strong> is the central bank of the United States. It's not a regular bank you can walk into. It's a government agency that controls the money supply and sets interest rates.</p>
+    <p>Think of it like this: if the whole US economy were a car, the Fed controls the <strong>gas pedal and the brakes</strong> — not the steering wheel (that's Congress).</p>
+  </div>
+
+  <div class="vocab-grid">
+    <div class="vocab-card"><div class="vocab-term">Monetary Policy</div><div class="vocab-def">How the Fed manages money supply and interest rates to influence the economy</div></div>
+    <div class="vocab-card"><div class="vocab-term">Interest Rate</div><div class="vocab-def">The cost of borrowing money — set by the Fed, affects every loan in America</div></div>
+    <div class="vocab-card"><div class="vocab-term">Inflation</div><div class="vocab-def">When prices rise over time — your dollar buys less than before</div></div>
+    <div class="vocab-card"><div class="vocab-term">Money Supply</div><div class="vocab-def">All the money circulating in the economy at a given time</div></div>
+  </div>
+
+  <div class="scenario train">
+    <div class="scenario-label">🚄 CAHSR Connection</div>
+    <p>California High-Speed Rail has borrowed billions to build the train. When the Fed raises interest rates, those loans get more expensive — meaning more tax dollars go to paying interest instead of laying track. In 2023, when the Fed hiked rates to fight inflation, CAHSR had to recalculate its entire budget. <em>The Fed never mentioned the train — but it changed everything.</em></p>
+  </div>
+
+  <div class="card">
+    <h3>Two main tools</h3>
+    <p><strong>Raise rates:</strong> Borrowing gets expensive → people spend less → economy slows → inflation drops. Use when the economy is "too hot."</p>
+    <p><strong>Lower rates:</strong> Borrowing gets cheap → people spend more → economy grows. Use when the economy is sluggish or in recession.</p>
+  </div>
+
+  <div class="divider"></div>
+  <div class="choice-label">Quick Check — pick the right answer</div>
+  <div class="choice-sub">The economy is in a recession. Unemployment is high. What should the Fed do?</div>
+  <div class="choices" id="l1q1-choices">
+    <button class="choice-btn" onclick="checkChoice('l1q1',this,'wrong','Try again — think about what makes people want to spend more money.')">
+      <div class="c-opt">Option A</div>
+      <div class="c-text">Raise interest rates to slow borrowing down</div>
+    </button>
+    <button class="choice-btn" onclick="checkChoice('l1q1',this,'right','Correct! Lower rates make borrowing cheap, so businesses invest and people spend — exactly what a slow economy needs.')">
+      <div class="c-opt">Option B</div>
+      <div class="c-text">Lower interest rates to encourage borrowing and spending</div>
+    </button>
+  </div>
+  <div class="feedback" id="fb-l1q1"></div>
+
+  <div class="divider"></div>
+  <div class="q-block">
+    <div class="q-eyebrow">Discussion Question</div>
+    <p>If you were building CAHSR and the Fed just raised interest rates, what would you do — keep building, pause, or find a different lender?</p>
+  </div>
+
+  <div class="bottom-nav">
+    <button class="btn-nav" onclick="goHome()">Home</button>
+    <button class="btn-nav primary" onclick="showPage('l2')">Next: Fiscal Policy →</button>
+  </div>
+</div>
+
+<!-- LESSON 2 -->
+<div class="page" id="page-l2">
+  <div class="prog-wrap"><div class="prog-fill" style="width:33%"></div></div>
+  <div class="lesson-eyebrow">Lesson 2 of 6</div>
+  <div class="lesson-title">Fiscal Policy</div>
+  <div class="big-idea">Lessons 1 &amp; 2 go together — the Fed (monetary) and Congress (fiscal) are two hands on the same economy. Same goal, different tools, different bosses.</div>
+
+  <div class="compare">
+    <div class="compare-side green">
+      <div class="compare-head">Monetary (Fed)</div>
+      <ul>
+        <li>Federal Reserve controls it</li>
+        <li>Uses interest rates</li>
+        <li>FOMC: 12 members (including the Chair)</li>
+        <li>Fast to implement</li>
+      </ul>
+    </div>
+    <div class="compare-side purple">
+      <div class="compare-head">Fiscal (Congress)</div>
+      <ul>
+        <li>President + Congress control it</li>
+        <li>Uses taxes &amp; spending</li>
+        <li>Requires votes &amp; bills</li>
+        <li>Slower — political process</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="vocab-grid">
+    <div class="vocab-card"><div class="vocab-term">Fiscal Policy</div><div class="vocab-def">Gov. decisions about taxing and spending to influence the economy</div></div>
+    <div class="vocab-card"><div class="vocab-term">Deficit Spending</div><div class="vocab-def">Spending more than you collect in taxes — government borrows the rest</div></div>
+    <div class="vocab-card"><div class="vocab-term">Stimulus</div><div class="vocab-def">Government money injected to boost a slow economy (like COVID checks)</div></div>
+    <div class="vocab-card"><div class="vocab-term">Austerity</div><div class="vocab-def">Cutting government spending to reduce debt — opposite of stimulus</div></div>
+  </div>
+
+  <div class="scenario train">
+    <div class="scenario-label">🚄 CAHSR — Fiscal Policy in Action</div>
+    <p>California's high-speed rail has received over $3.5 billion in federal grants — that's fiscal policy. Congress approved that spending. It's taxpayer money going toward infrastructure. Supporters say it creates jobs and grows the economy. Critics say it's wasteful deficit spending on a project that keeps missing deadlines.</p>
+  </div>
+
+  <div class="scenario guns">
+    <div class="scenario-label">⚖️ Gun Laws — Fiscal Policy Angle</div>
+    <p>California has spent hundreds of millions in state funding on gun violence prevention programs, buyback programs, and enforcement. That's fiscal policy at the state level. Some economists argue it reduces long-term costs of gun violence (ER bills, lost wages, incarceration). Others call it government overreach. Either way — it's a fiscal choice with an opportunity cost.</p>
+  </div>
+
+  <div class="divider"></div>
+  <div class="choice-label">Quick Check</div>
+  <div class="choice-sub">Congress passes a law giving $2 billion to expand CAHSR. What type of policy is this?</div>
+  <div class="choices" id="l2q1-choices">
+    <button class="choice-btn" onclick="checkChoice('l2q1',this,'wrong','Not quite — the Fed handles monetary policy using interest rates. Congress wasn\'t involved there.')">
+      <div class="c-opt">Option A</div>
+      <div class="c-text">Monetary policy — the Fed controls the money supply</div>
+    </button>
+    <button class="choice-btn" onclick="checkChoice('l2q1',this,'right','Correct! Congress spending taxpayer money on infrastructure = fiscal policy.')">
+      <div class="c-opt">Option B</div>
+      <div class="c-text">Fiscal policy — Congress is spending taxpayer money on infrastructure</div>
+    </button>
+  </div>
+  <div class="feedback" id="fb-l2q1"></div>
+
+  <div class="divider"></div>
+  <div class="q-block">
+    <div class="q-eyebrow">Big Picture — Lessons 1 &amp; 2 Together</div>
+    <p>The Fed raises rates (slowing borrowing) while Congress is spending billions on a train. Do those goals conflict? What happens to CAHSR's loan costs?</p>
+  </div>
+
+  <button class="reveal-btn" id="rvbtn-l2" onclick="toggleReveal('rv-l2','rvbtn-l2')">
+    Show hint <span class="arr">▾</span>
+  </button>
+  <div class="reveal-content" id="rv-l2">Yes — this is called a "policy conflict." In 2022–2024, the Fed raised rates to fight inflation while Congress kept funding infrastructure. This made CAHSR's borrowing costs go up even as Congress added to its budget. The two arms of government were pulling in different directions at the same time.</div>
+
+  <div class="bottom-nav">
+    <button class="btn-nav" onclick="showPage('l1')">← Back</button>
+    <button class="btn-nav primary" onclick="showPage('l3')">Next: Supply & Demand →</button>
+  </div>
+</div>
+
+<!-- LESSON 3 -->
+<div class="page" id="page-l3">
+  <div class="prog-wrap"><div class="prog-fill" style="width:50%"></div></div>
+  <div class="lesson-eyebrow">Lesson 3 of 6</div>
+  <div class="lesson-title">Supply & Demand</div>
+  <div class="big-idea">Big idea: Prices are not random. They're the result of how much of something exists and how badly people want it.</div>
+
+  <div class="card">
+    <h3>The core idea</h3>
+    <p><strong>Demand:</strong> How much people want to buy at a given price. As price goes up, demand usually goes down.</p>
+    <p><strong>Supply:</strong> How much sellers can offer. As price goes up, sellers want to sell more.</p>
+    <p>Where both forces meet = <strong>the equilibrium price</strong>. That's what things actually cost in a free market.</p>
+  </div>
+
+  <div class="slider-wrap">
+    <div class="slider-row">
+      <span class="slider-tag">Drag to change price</span>
+      <span style="font-size:13px;font-weight:600;color:var(--green)" id="price-display">$50</span>
+    </div>
+    <input type="range" min="1" max="10" value="5" id="price-slider" oninput="updateSD()">
+    <div class="slider-row"><span class="slider-tag">Low ($10)</span><span class="slider-tag">High ($100)</span></div>
+    <div class="sd-stats">
+      <div class="sd-stat">
+        <div class="sd-stat-label d">Demand</div>
+        <div class="sd-val" id="sd-demand">Medium</div>
+      </div>
+      <div class="sd-stat">
+        <div class="sd-stat-label s">Supply</div>
+        <div class="sd-val" id="sd-supply">Medium</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scenario guns">
+    <div class="scenario-label">⚖️ Gun Market & California Law</div>
+    <p>California's strict gun laws restrict legal supply — background checks, waiting periods, bans on certain models. When legal supply shrinks, prices tend to rise. Sometimes a black market forms where supply moves outside the law. This is a real economic consequence of regulation — not an argument for or against guns, just cause and effect.</p>
+  </div>
+
+  <div class="scenario train">
+    <div class="scenario-label">🚄 CAHSR Ticket Pricing</div>
+    <p>Once built, CAHSR needs to set ticket prices. Too high → demand drops and the train runs half-empty. Too low → train is packed but loses money. Finding the right price = finding equilibrium. Airlines and Amtrak already compete for the same riders.</p>
+  </div>
+
+  <div class="divider"></div>
+  <div class="choice-label" style="margin-bottom:4px">Matching Game</div>
+  <div class="match-instructions">Tap a scenario, then tap its matching concept. Get all 3 right!</div>
+  <div class="match-cols">
+    <div>
+      <div class="match-col-head">Scenario</div>
+      <div class="match-col" id="match-left"></div>
+    </div>
+    <div>
+      <div class="match-col-head">Concept</div>
+      <div class="match-col" id="match-right"></div>
+    </div>
+  </div>
+  <div class="match-score" id="match-score"></div>
+
+  <div class="divider"></div>
+  <div class="q-block">
+    <div class="q-eyebrow">Think About It</div>
+    <p>California bans ghost guns (untraceable firearms). This shrinks legal supply. What do you predict happens to the price of legal guns in California compared to Texas, where laws are much looser?</p>
+  </div>
+
+  <div class="bottom-nav">
+    <button class="btn-nav" onclick="showPage('l2')">← Back</button>
+    <button class="btn-nav primary" onclick="showPage('l4')">Next: Opportunity Cost →</button>
+  </div>
+</div>
+
+<!-- LESSON 4 -->
+<div class="page" id="page-l4">
+  <div class="prog-wrap"><div class="prog-fill" style="width:66%"></div></div>
+  <div class="lesson-eyebrow">Lesson 4 of 6</div>
+  <div class="lesson-title">Opportunity Cost & Decision Making</div>
+  <div class="big-idea">Big idea: Every time you choose something, you're giving up something else. The thing you gave up is the opportunity cost.</div>
+
+  <div class="card">
+    <h3>It's not just about money — it's about tradeoffs</h3>
+    <p>Opportunity cost is the value of the <strong>next best option you didn't pick</strong>. If California spends $100 billion building a train, the opportunity cost is what that $100 billion could have built instead — schools, highways, housing.</p>
+    <p>Economists say: <em>"There's no such thing as a free lunch."</em> Every decision uses resources that could have gone somewhere else.</p>
+  </div>
+
+  <div class="scenario train">
+    <div class="scenario-label">🚄 The CAHSR Opportunity Cost</div>
+    <p>California has spent over $12 billion on CAHSR so far — with a total projected cost of $100+ billion. That same $100 billion could fund roughly 200 new schools, thousands of miles of repaired highway, or years of housing assistance. Choosing the train means choosing NOT to do those things. Both choices might be good — but you literally cannot do both.</p>
+  </div>
+
+  <div class="scenario guns">
+    <div class="scenario-label">⚖️ Gun Law Enforcement Costs</div>
+    <p>California spends significant resources enforcing its gun laws — background check systems, law enforcement training, court costs for prosecutions. The opportunity cost: that same money and police time could go toward other crimes, mental health services, or schools. Even supporters of strict gun laws have to wrestle with this tradeoff.</p>
+  </div>
+
+  <div class="divider"></div>
+  <div class="choice-label">Decision Challenge — what would you fund?</div>
+  <div class="choice-sub">California has $10 billion to spend. You can only pick ONE. What's the opportunity cost of your choice?</div>
+  <button class="oc-btn" onclick="showOC(this,'rail')">
+    <div class="oc-opt">Option A — CAHSR</div>
+    <div class="oc-text">Invest in completing the high-speed rail segment from Merced to Bakersfield</div>
+  </button>
+  <button class="oc-btn" onclick="showOC(this,'schools')">
+    <div class="oc-opt">Option B — Schools</div>
+    <div class="oc-text">Build 100 new schools and hire 5,000 teachers across the state</div>
+  </button>
+  <button class="oc-btn" onclick="showOC(this,'housing')">
+    <div class="oc-opt">Option C — Housing</div>
+    <div class="oc-text">Fund affordable housing construction to reduce homelessness by 40%</div>
+  </button>
+  <div class="oc-result" id="oc-result"></div>
+
+  <div class="q-block" style="margin-top:14px">
+    <div class="q-eyebrow">Discussion</div>
+    <p>Is there a "right" answer in opportunity cost decisions? Or is it always about values — what a community thinks matters most?</p>
+  </div>
+
+  <div class="bottom-nav">
+    <button class="btn-nav" onclick="showPage('l3')">← Back</button>
+    <button class="btn-nav primary" onclick="showPage('l5')">Next: GDP →</button>
+  </div>
+</div>
+
+<!-- LESSON 5 -->
+<div class="page" id="page-l5">
+  <div class="prog-wrap"><div class="prog-fill" style="width:83%"></div></div>
+  <div class="lesson-eyebrow">Lesson 5 of 6</div>
+  <div class="lesson-title">GDP — Gross Domestic Product</div>
+  <div class="big-idea">Big idea: GDP is the scorecard for the whole economy. But like any scorecard, it doesn't tell the whole story.</div>
+
+  <div class="card">
+    <h3>What is GDP?</h3>
+    <p><strong>GDP</strong> = the total value of all goods and services produced in a country in one year. It's how we know if an economy is growing or shrinking.</p>
+    <p>The formula: <strong>GDP = Consumer spending + Business investment + Government spending + (Exports − Imports)</strong></p>
+  </div>
+
+  <div class="vocab-grid">
+    <div class="vocab-card"><div class="vocab-term">GDP Growth</div><div class="vocab-def">Economy expanding — usually means more jobs and higher wages</div></div>
+    <div class="vocab-card"><div class="vocab-term">Recession</div><div class="vocab-def">GDP shrinks for two quarters in a row — jobs start disappearing</div></div>
+    <div class="vocab-card"><div class="vocab-term">GDP per Capita</div><div class="vocab-def">GDP divided by population — measures average economic output per person</div></div>
+    <div class="vocab-card"><div class="vocab-term">Real vs. Nominal</div><div class="vocab-def">Real GDP adjusts for inflation so we can compare across years fairly</div></div>
+  </div>
+
+  <div class="scenario train">
+    <div class="scenario-label">🚄 Does CAHSR Add to GDP?</div>
+    <p>Yes — construction spending adds directly to GDP through the "government spending" component. Every dollar spent on track, engineers, and steel = GDP going up. BUT — GDP doesn't tell us if that was the best use of those dollars. Critics note that GDP can go up even when building something wasteful. A bridge to nowhere raises GDP while it's being built.</p>
+  </div>
+
+  <div class="scenario guns">
+    <div class="scenario-label">⚖️ Gun Violence & GDP</div>
+    <p>Gun violence has a real GDP cost — ER care, lost worker productivity, incarceration, and reduced investment in high-crime areas. One study estimated the total annual cost of gun violence in the US at over $550 billion — nearly 2% of GDP. California's strict gun laws are partly an economic argument: less violence could keep workers productive and neighborhoods investable.</p>
+  </div>
+
+  <div class="divider"></div>
+  <div class="choice-label" style="margin-bottom:4px">What drives California's GDP?</div>
+  <div class="choice-sub" style="margin-bottom:10px">California alone would be the 5th largest economy in the world. Tap a sector to learn more:</div>
+  <div class="sector-grid">
+    <div class="sector-btn" id="sec-tech" onclick="showSector('tech')">
+      <div class="s-icon">💻</div>
+      <div class="s-name">Technology</div>
+      <div class="s-pct">~30% of CA GDP</div>
+    </div>
+    <div class="sector-btn" id="sec-agri" onclick="showSector('agri')">
+      <div class="s-icon">🌾</div>
+      <div class="s-name">Agriculture</div>
+      <div class="s-pct">~2% of CA GDP</div>
+    </div>
+    <div class="sector-btn" id="sec-film" onclick="showSector('film')">
+      <div class="s-icon">🎬</div>
+      <div class="s-name">Entertainment</div>
+      <div class="s-pct">~5% of CA GDP</div>
+    </div>
+    <div class="sector-btn" id="sec-gov" onclick="showSector('gov')">
+      <div class="s-icon">🏛️</div>
+      <div class="s-name">Government</div>
+      <div class="s-pct">~12% of CA GDP</div>
+    </div>
+  </div>
+  <div class="sector-detail" id="sector-detail"></div>
+
+  <div class="q-block" style="margin-top:14px">
+    <div class="q-eyebrow">Critical Thinking</div>
+    <p>GDP goes up when we build CAHSR. GDP also goes up when we pay hospital bills for gun violence. Does that mean both are equally "good for the economy"? What's missing from GDP as a measurement?</p>
+  </div>
+
+  <div class="bottom-nav">
+    <button class="btn-nav" onclick="showPage('l4')">← Back</button>
+    <button class="btn-nav primary" onclick="showPage('l6')">Next: Philosophies →</button>
+  </div>
+</div>
+
+<!-- LESSON 6 -->
+<div class="page" id="page-l6">
+  <div class="prog-wrap"><div class="prog-fill" style="width:100%"></div></div>
+  <div class="lesson-eyebrow">Lesson 6 of 6</div>
+  <div class="lesson-title">Main Economic Philosophies</div>
+  <div class="big-idea">Every economic decision in this course comes back to one question: how much should the government be involved in the economy?</div>
+
+  <div class="phil-card green">
+    <h3>Capitalism / Free Market</h3>
+    <p>Let private individuals and businesses make economic decisions. Prices are set by supply and demand. Government stays small. More freedom = more innovation, but also more inequality.</p>
+    <div class="connect"><strong>On CAHSR:</strong> Gov. shouldn't fund a train — let private companies build it (or not). <strong>On Gun Laws:</strong> Less regulation = freer market for firearms.</div>
+  </div>
+
+  <div class="phil-card purple">
+    <h3>Keynesian Economics</h3>
+    <p>Government should actively stabilize the economy — spend during recessions, pull back during booms. Named after economist John Maynard Keynes. Fiscal policy is central here.</p>
+    <div class="connect"><strong>On CAHSR:</strong> Government spending creates jobs and multiplies through the economy. <strong>On Gun Laws:</strong> Regulation is acceptable to reduce social and economic costs.</div>
+  </div>
+
+  <div class="phil-card amber">
+    <h3>Socialism / Mixed Economy</h3>
+    <p>Key industries (transportation, healthcare, energy) should be publicly owned or heavily regulated. Profit motive alone doesn't serve the public good. Most countries have mixed economies.</p>
+    <div class="connect"><strong>On CAHSR:</strong> Rail should be public and affordable — not a profit-making venture. <strong>On Gun Laws:</strong> Strong regulation is a public safety obligation.</div>
+  </div>
+
+  <div class="phil-card red">
+    <h3>Supply-Side / "Trickle Down"</h3>
+    <p>Cut taxes — especially on businesses and the wealthy — so they invest and create jobs, which benefits everyone. Reagan-era policy. Critics say the benefits don't always trickle down.</p>
+    <div class="connect"><strong>On CAHSR:</strong> Tax cuts beat infrastructure spending. Private rail is more efficient than government projects. <strong>On Gun Laws:</strong> Less regulation = more economic freedom.</div>
+  </div>
+
+  <div class="scenario gov">
+    <div class="scenario-label">🏛️ California's Philosophy in Practice</div>
+    <p>California is often called the most Keynesian + Mixed Economy state in the US. It has the highest income taxes in the US, funds CAHSR through government spending, has the strictest gun regulations in the country, and has a massive public sector. It's a living laboratory for these debates — critics and supporters both point to CA as their proof.</p>
+  </div>
+
+  <div class="divider"></div>
+  <div class="choice-label" style="margin-bottom:4px">Final Review — tap to reveal</div>
+  <div class="tap-hint">Tap each quote to see who said it and what it means</div>
+
+  <div class="tap-card" onclick="toggleTap('tq1')">
+    <div class="tap-eyebrow">Quote 1 — who said this?</div>
+    <div class="tap-q">"In the long run, we are all dead. Government must act now to save the economy."</div>
+    <div class="tap-ans" id="tq1">→ John Maynard Keynes — the father of Keynesian economics. He argued governments shouldn't wait for markets to self-correct during a crisis.</div>
+  </div>
+
+  <div class="tap-card" onclick="toggleTap('tq2')">
+    <div class="tap-eyebrow">Quote 2 — who said this?</div>
+    <div class="tap-q">"There is no such thing as a free lunch." (Every government program has a cost someone else pays.)</div>
+    <div class="tap-ans" id="tq2">→ Milton Friedman — the leading free-market economist. He was a strong critic of government spending and regulation. Ironically, this quote also applies to the opportunity cost of not regulating guns.</div>
+  </div>
+
+  <div class="tap-card" onclick="toggleTap('tq3')">
+    <div class="tap-eyebrow">Quote 3 — apply it</div>
+    <div class="tap-q">"If we cut taxes on California businesses, they'll invest in high-speed rail themselves — faster and cheaper than the state can." What philosophy is this?</div>
+    <div class="tap-ans" id="tq3">→ Supply-side / free market economics. Lower taxes → more private investment → better outcomes than government spending. This is the core critique of CAHSR from the right — and it ties directly back to Lessons 1 and 2.</div>
+  </div>
+
+  <div class="hero-complete">
+    <h2>All 6 lessons done! 🎉</h2>
+    <p>You connected Federal Reserve → Fiscal Policy → Supply & Demand → Opportunity Cost → GDP → Economic Philosophies — all tied together through a train, a gun debate, and the question of what government should do.</p>
+    <div class="thread-chips">
+      <span class="chip chip-g">🚄 CAHSR</span>
+      <span class="chip chip-p">⚖️ Gun Laws</span>
+      <span class="chip chip-a">🏛️ Role of Gov.</span>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <button class="btn-nav" onclick="showPage('l5')">← Back</button>
+    <button class="btn-nav primary" onclick="goHome()">Back to Home</button>
+  </div>
+</div>
+
+<script>
+// NAV
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const pg=document.getElementById('page-'+id);
+  if(pg){pg.classList.add('active');}
+  document.getElementById('back-btn').classList.toggle('visible',id!=='home');
+  const titles={home:'CA Economics',l1:'Lesson 1 — Federal Reserve',l2:'Lesson 2 — Fiscal Policy',l3:'Lesson 3 — Supply & Demand',l4:'Lesson 4 — Opportunity Cost',l5:'Lesson 5 — GDP',l6:'Lesson 6 — Philosophies'};
+  document.getElementById('top-title').textContent=titles[id]||'CA Economics';
+  window.scrollTo(0,0);
+}
+function goHome(){showPage('home');}
+function openDrawer(){document.getElementById('drawer').classList.add('open');document.getElementById('overlay').classList.add('open');}
+function closeDrawer(){document.getElementById('drawer').classList.remove('open');document.getElementById('overlay').classList.remove('open');}
+
+// CHOICE CHECK
+function checkChoice(id,btn,type,msg){
+  const wrap=btn.closest('.choices');
+  if(wrap.dataset.answered)return;
+  wrap.dataset.answered=1;
+  const fb=document.getElementById('fb-'+id);
+  btn.classList.add(type==='right'?'correct':'incorrect');
+  fb.textContent=msg;
+  fb.className='feedback show '+(type==='right'?'good':'bad');
+}
+
+// REVEAL
+function toggleReveal(rid,btnId){
+  const c=document.getElementById(rid);
+  const b=document.getElementById(btnId);
+  const open=c.classList.toggle('show');
+  b.classList.toggle('open',open);
+}
+
+// SUPPLY DEMAND SLIDER
+const demandLabels=['Very High','Very High','High','High','Medium','Medium','Low','Low','Very Low','Very Low'];
+const supplyLabels=['Very Low','Very Low','Low','Low','Medium','Medium','High','High','Very High','Very High'];
+function updateSD(){
+  const v=parseInt(document.getElementById('price-slider').value);
+  document.getElementById('price-display').textContent='$'+(v*10);
+  document.getElementById('sd-demand').textContent=demandLabels[v-1];
+  document.getElementById('sd-supply').textContent=supplyLabels[v-1];
+}
+
+// MATCHING GAME
+const pairs=[
+  {s:'Legal gun supply shrinks → prices rise',c:'Supply Shock'},
+  {s:'CAHSR raises prices → fewer riders buy tickets',c:'Law of Demand'},
+  {s:'More gun makers enter market → prices fall',c:'Supply Increase'},
+];
+let selEl=null,matchCount=0;
+function buildMatch(){
+  const lc=document.getElementById('match-left');
+  const rc=document.getElementById('match-right');
+  const sp=[...pairs].sort(()=>Math.random()-.5);
+  const cp=[...pairs].sort(()=>Math.random()-.5);
+  lc.innerHTML='';rc.innerHTML='';
+  sp.forEach(p=>{const b=document.createElement('button');b.className='match-btn';b.textContent=p.s;b.dataset.v=p.c;b.dataset.t='s';b.onclick=()=>handleM(b);lc.appendChild(b);});
+  cp.forEach(p=>{const b=document.createElement('button');b.className='match-btn';b.textContent=p.c;b.dataset.v=p.c;b.dataset.t='c';b.onclick=()=>handleM(b);rc.appendChild(b);});
+}
+function handleM(btn){
+  if(btn.classList.contains('matched'))return;
+  if(!selEl){selEl=btn;btn.classList.add('sel');return;}
+  if(selEl===btn){selEl.classList.remove('sel');selEl=null;return;}
+  if(selEl.dataset.v===btn.dataset.v&&selEl.dataset.t!==btn.dataset.t){
+    selEl.classList.remove('sel');selEl.classList.add('matched');btn.classList.add('matched');
+    matchCount++;
+    document.getElementById('match-score').textContent=matchCount===3?'All 3 matched! Great work! 🎉':matchCount+'/3 matched';
+    selEl=null;
+  } else {
+    selEl.classList.add('wrong');btn.classList.add('wrong');
+    const a=selEl,b2=btn;setTimeout(()=>{a.classList.remove('sel','wrong');b2.classList.remove('wrong');},500);
+    selEl=null;
+  }
+}
+buildMatch();
+
+// OPPORTUNITY COST
+const ocMsgs={
+  rail:'You chose CAHSR. Opportunity cost: the schools and housing that $10B could have funded. Is transportation infrastructure worth more than housing or education right now?',
+  schools:'You chose schools. Opportunity cost: no train expansion and no new housing with this money. Is educating the next generation the highest-return investment for California?',
+  housing:'You chose housing. Opportunity cost: no train and no new schools this year. With California\'s housing crisis, many economists say this has the highest immediate social return — but it also means the train waits longer.'
+};
+function showOC(btn,choice){
+  document.querySelectorAll('.oc-btn').forEach(b=>b.style.opacity='0.5');
+  btn.style.opacity='1';
+  btn.style.borderColor='var(--green)';
+  const r=document.getElementById('oc-result');
+  r.textContent=ocMsgs[choice];r.classList.add('show');
+}
+
+// GDP SECTORS
+const sectorData={
+  tech:'Technology (Silicon Valley, AI, software): ~30% of California\'s GDP. Companies like Apple, Google, and Meta are headquartered here. The Fed\'s interest rate decisions directly affect tech investment — higher rates = less venture capital flowing into startups.',
+  agri:'Agriculture: only ~2% of GDP but California feeds the nation. The Central Valley (near the CAHSR route) is among the most productive farmland in the world. Fast rail could help farm workers commute and reduce truck traffic on Highway 99.',
+  film:'Entertainment (Hollywood): ~5% of GDP. Also affects how Americans think about guns — media shapes public opinion, which shapes policy, which shapes markets. Gun culture in movies vs. gun laws in reality is itself an economic and cultural tension.',
+  gov:'Government spending: ~12% of California GDP. This includes CAHSR, the UC and CSU systems, and law enforcement. This is Keynesian fiscal policy made visible — and it also means California\'s GDP is partly dependent on political decisions.'
+};
+let curSec=null;
+function showSector(s){
+  if(curSec)document.getElementById('sec-'+curSec).classList.remove('sel');
+  curSec=s;
+  document.getElementById('sec-'+s).classList.add('sel');
+  const d=document.getElementById('sector-detail');
+  d.textContent=sectorData[s];d.classList.add('show');
+}
+
+// FINAL QUIZ
+function toggleTap(id){
+  const el=document.getElementById(id);
+  el.classList.toggle('show');
+}
+</script>
+</body>
+</html>
